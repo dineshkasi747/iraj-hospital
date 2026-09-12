@@ -1,6 +1,11 @@
 import Link from "next/link";
 
 export default function PageHeader({ title, breadcrumbs = [] }) {
+  // Filter out duplicate "Home" breadcrumb entries if passed
+  const cleanCrumbs = breadcrumbs.filter(
+    (c) => (c.label || "").toLowerCase().trim() !== "home"
+  );
+
   return (
     <div className="subpage-header">
       <div className="container">
@@ -13,7 +18,7 @@ export default function PageHeader({ title, breadcrumbs = [] }) {
                 <li>
                   <Link href="/">Home</Link>
                 </li>
-                {breadcrumbs.map((crumb, idx) => (
+                {cleanCrumbs.map((crumb, idx) => (
                   <li key={idx}>
                     {crumb.href ? (
                       <Link href={crumb.href}>{crumb.label}</Link>

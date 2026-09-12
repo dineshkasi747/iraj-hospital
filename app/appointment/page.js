@@ -111,38 +111,61 @@ export default function AppointmentPage() {
           {/* Patient Account Status Banner */}
           {!user ? (
             <div
-              className="p-4 rounded-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 shadow-sm border"
+              className="p-3 p-md-4 rounded-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 shadow-sm border"
               style={{ backgroundColor: "#EBF5F3", borderColor: "#C2E2DA" }}
             >
               <div className="d-flex align-items-center gap-3">
                 <div
-                  className="rounded-circle p-3 d-flex align-items-center justify-content-center text-white"
-                  style={{ backgroundColor: "#07332F", width: "48px", height: "48px", flexShrink: 0 }}
+                  className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
+                  style={{
+                    backgroundColor: "#07332F",
+                    width: "48px",
+                    height: "48px",
+                    fontSize: "20px",
+                  }}
                 >
-                  <i className="fa-solid fa-user-lock fs-5"></i>
+                  <i className="fa-solid fa-user-lock"></i>
                 </div>
                 <div>
-                  <h5 className="fw-bold mb-1" style={{ color: "#07332F" }}>
+                  <h5 className="fw-bold mb-1" style={{ color: "#07332F", fontSize: "17px" }}>
                     Have an IRAJ Patient Account?
                   </h5>
-                  <p className="text-secondary small mb-0">
+                  <p className="text-secondary small mb-0" style={{ lineHeight: "1.5" }}>
                     Sign in to auto-fill your verified WhatsApp contact and keep track of your consultation history.
                   </p>
                 </div>
               </div>
-              <div className="d-flex gap-2 flex-shrink-0">
+              <div className="d-flex align-items-center gap-2 flex-shrink-0 mt-1 mt-md-0">
                 <Link
                   href="/login?redirect=/appointment"
-                  className="btn btn-sm btn-default px-3 py-2 fw-semibold"
+                  className="btn btn-sm fw-bold d-inline-flex align-items-center justify-content-center gap-2 rounded-pill px-4 py-2"
+                  style={{
+                    backgroundColor: "var(--accent-color, #F7A582)",
+                    color: "#07332F",
+                    border: "1px solid var(--accent-color, #F7A582)",
+                    fontSize: "13.5px",
+                    textDecoration: "none",
+                    boxShadow: "0 2px 8px rgba(247, 165, 130, 0.35)",
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  Sign In
+                  <i className="fa-solid fa-right-to-bracket"></i>
+                  <span>Sign In</span>
                 </Link>
                 <Link
                   href="/signup?redirect=/appointment"
-                  className="btn btn-sm btn-outline-dark px-3 py-2 fw-semibold"
-                  style={{ borderColor: "#07332F", color: "#07332F" }}
+                  className="btn btn-sm fw-bold d-inline-flex align-items-center justify-content-center gap-2 rounded-pill px-4 py-2"
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#07332F",
+                    border: "2px solid #07332F",
+                    fontSize: "13.5px",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  Register
+                  <i className="fa-solid fa-user-plus"></i>
+                  <span>Register</span>
                 </Link>
               </div>
             </div>
@@ -397,46 +420,68 @@ export default function AppointmentPage() {
 
           <div className="row">
             {doctors.map((doctor) => (
-              <div key={doctor.id} className="col-lg-3 col-md-6">
+              <div key={doctor.id} className="col-lg-3 col-md-6 mb-4">
                 <div
-                  className="team-member-item wow fadeInUp"
+                  className="team-member-item wow fadeInUp h-100 rounded-4 overflow-hidden position-relative shadow-sm"
                   data-wow-delay={doctor.delay || undefined}
+                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #E2ECE9" }}
                 >
-                  <div className="team-image">
-                    <figure className="image-anime">
-                      <img src={doctor.image} alt={doctor.name} />
+                  <div className="team-image position-relative">
+                    <figure className="image-anime mb-0">
+                      <img
+                        src={doctor.image}
+                        alt={doctor.name}
+                        style={{ filter: !user ? "blur(1.5px)" : "none" }}
+                      />
                     </figure>
 
-                    <div className="team-social-list">
-                      <ul>
-                        <li>
-                          <a href="https://www.instagram.com/irajhospitals/" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
-                            <i className="fa-brands fa-instagram"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="https://wa.me/919801081080" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="WhatsApp">
-                            <i className="fa-brands fa-whatsapp"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="https://www.facebook.com/profile.php?id=61581884108145" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Facebook">
-                            <i className="fa-brands fa-facebook-f"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
+                    {!user ? (
+                      <Link
+                        href={`/login?redirect=/our-team/${doctor.id}`}
+                        className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none"
+                        style={{ backgroundColor: "rgba(7, 51, 47, 0.45)" }}
+                      >
+                        <i className="fa-solid fa-lock text-white fs-3 mb-1"></i>
+                        <span className="badge bg-dark text-white rounded-pill px-3 py-1 small">Sign in to view</span>
+                      </Link>
+                    ) : (
+                      <div className="team-social-list">
+                        <ul>
+                          <li>
+                            <a href="https://www.instagram.com/irajhospitals/" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
+                              <i className="fa-brands fa-instagram"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://wa.me/919801081080" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="WhatsApp">
+                              <i className="fa-brands fa-whatsapp"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://www.facebook.com/profile.php?id=61581884108145" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Facebook">
+                              <i className="fa-brands fa-facebook-f"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="team-body">
+                  <div className="team-body p-4">
                     <div className="team-content">
                       <h3>{doctor.role}</h3>
                       <h2>
-                        <Link href={`/our-team/${doctor.id}`}>
-                          {doctor.name}
-                        </Link>
+                        {user ? (
+                          <Link href={`/our-team/${doctor.id}`}>
+                            {doctor.name}
+                          </Link>
+                        ) : (
+                          <Link href={`/login?redirect=/our-team/${doctor.id}`}>
+                            {doctor.name} <i className="fa-solid fa-lock ms-1 small text-muted"></i>
+                          </Link>
+                        )}
                       </h2>
-                      <p>{doctor.desc}</p>
+                      <p>{user ? doctor.desc : "Login to view schedule & credentials."}</p>
                     </div>
                   </div>
                 </div>
