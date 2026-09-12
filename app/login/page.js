@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/components/common/PageHeader";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -78,8 +79,8 @@ export default function LoginPage() {
                   >
                     Welcome Back
                   </h2>
-                  <p className="text-muted small">
-                    Sign in to access your doctor consultations, appointments, and medical records.
+                  <p className="text-muted small mb-0">
+                    Sign in with Google for instant access to appointment booking &amp; doctors.
                   </p>
                 </div>
 
@@ -91,10 +92,30 @@ export default function LoginPage() {
                   >
                     <i className="fa-solid fa-lock me-2"></i>
                     <div>
-                      Please sign in or register to view full doctor details and schedule appointments.
+                      Sign in to view full doctor qualifications and book your consultation.
                     </div>
                   </div>
                 )}
+
+                {/* Prominent Google Sign-In Button */}
+                <div className="mb-4">
+                  <GoogleSignInButton
+                    redirectPath={redirect}
+                    buttonText="Sign In with Google"
+                    subText="Auto-fills your verified details on the booking page"
+                    size="lg"
+                    showSetupHelper={true}
+                  />
+                </div>
+
+                {/* Divider */}
+                <div className="d-flex align-items-center my-4">
+                  <hr className="flex-grow-1 my-0" style={{ borderColor: "#E2ECE9" }} />
+                  <span className="px-3 text-muted small fw-semibold" style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
+                    OR SIGN IN WITH EMAIL
+                  </span>
+                  <hr className="flex-grow-1 my-0" style={{ borderColor: "#E2ECE9" }} />
+                </div>
 
                 {error && (
                   <div
@@ -196,22 +217,22 @@ export default function LoginPage() {
                       </>
                     ) : (
                       <>
-                        Sign In to Account <i className="fa-solid fa-arrow-right ms-1"></i>
+                        Sign In with Email <i className="fa-solid fa-arrow-right ms-1"></i>
                       </>
                     )}
                   </button>
                 </form>
 
                 {/* Switch to Signup */}
-                <div className="text-center mt-4 pt-2 border-top">
+                <div className="text-center mt-4 pt-3 border-top">
                   <p className="text-secondary small mb-0">
-                    Don&apos;t have an account yet?{" "}
+                    Prefer registering without Google?{" "}
                     <Link
                       href={`/signup${redirect !== "/" ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
                       className="fw-bold text-decoration-none"
                       style={{ color: "#07332F" }}
                     >
-                      Register for free
+                      Create email account
                     </Link>
                   </p>
                 </div>

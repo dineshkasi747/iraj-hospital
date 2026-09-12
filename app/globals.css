@@ -1211,6 +1211,93 @@ main {
   }
 }
 
+/* ==========================================================================
+   Appointment Booking Form High Contrast Theme Fix
+   ========================================================================== */
+.appointment-booking .contact-form {
+  background-color: #07332F !important;
+  border-radius: 20px 0 0 20px;
+}
+
+@media (max-width: 991px) {
+  .appointment-booking .contact-form {
+    border-radius: 20px 20px 0 0 !important;
+  }
+  .appointment-booking .quick-contacts {
+    border-radius: 0 0 20px 20px !important;
+  }
+}
+
+.appointment-booking .contact-form label {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.2px;
+}
+
+.appointment-booking .contact-form label .text-danger {
+  color: #F7A582 !important;
+}
+
+.appointment-booking .contact-form input.form-control,
+.appointment-booking .contact-form select.form-control,
+.appointment-booking .contact-form textarea.form-control {
+  background-color: #FFFFFF !important;
+  color: #07332F !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  border: 1.5px solid #D5E7E2 !important;
+  border-radius: 8px !important;
+  padding: 12px 14px !important;
+  height: 50px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.appointment-booking .contact-form textarea.form-control {
+  height: auto !important;
+  min-height: 100px !important;
+}
+
+.appointment-booking .contact-form input.form-control:focus,
+.appointment-booking .contact-form select.form-control:focus,
+.appointment-booking .contact-form textarea.form-control:focus {
+  border-color: #38D39F !important;
+  box-shadow: 0 0 0 3px rgba(56, 211, 159, 0.25) !important;
+  background-color: #FFFFFF !important;
+  color: #07332F !important;
+}
+
+.appointment-booking .contact-form input.form-control::placeholder,
+.appointment-booking .contact-form textarea.form-control::placeholder {
+  color: #8D99AE !important;
+  font-weight: 400 !important;
+}
+
+.appointment-booking .contact-form .input-group-text {
+  background-color: #E8F4F1 !important;
+  color: #07332F !important;
+  font-weight: 700 !important;
+  border: 1.5px solid #D5E7E2 !important;
+  border-right: none !important;
+  font-size: 14px !important;
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+}
+
+.appointment-booking .contact-form .input-group input.form-control {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.appointment-booking .contact-form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none !important;
+  cursor: pointer;
+}
+
+.appointment-booking .quick-contacts {
+  border-radius: 0 20px 20px 0;
+}
+
 
 
 

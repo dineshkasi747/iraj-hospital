@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/components/common/PageHeader";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -107,11 +108,31 @@ export default function SignupPage() {
                     className="fw-bold mb-1"
                     style={{ color: "#07332F", fontSize: "28px", letterSpacing: "-0.5px" }}
                   >
-                    Create Patient Account
+                    Quick Patient Access
                   </h2>
-                  <p className="text-muted small">
-                    Sign up to view doctor qualifications, medical records, and book appointments.
+                  <p className="text-muted small mb-0">
+                    Use Google for instant 1-click access without remembering passwords.
                   </p>
+                </div>
+
+                {/* Prominent Google Sign-Up Button */}
+                <div className="mb-4">
+                  <GoogleSignInButton
+                    redirectPath={redirect}
+                    buttonText="Sign Up with Google (Instant)"
+                    subText="Auto-creates your patient profile and fills booking details"
+                    size="lg"
+                    showSetupHelper={true}
+                  />
+                </div>
+
+                {/* Divider */}
+                <div className="d-flex align-items-center my-4">
+                  <hr className="flex-grow-1 my-0" style={{ borderColor: "#E2ECE9" }} />
+                  <span className="px-3 text-muted small fw-semibold" style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
+                    OR REGISTER WITH EMAIL
+                  </span>
+                  <hr className="flex-grow-1 my-0" style={{ borderColor: "#E2ECE9" }} />
                 </div>
 
                 {error && (
@@ -294,14 +315,14 @@ export default function SignupPage() {
                       </>
                     ) : (
                       <>
-                        Create Account <i className="fa-solid fa-arrow-right ms-1"></i>
+                        Create Account with Email <i className="fa-solid fa-arrow-right ms-1"></i>
                       </>
                     )}
                   </button>
                 </form>
 
                 {/* Switch to Login */}
-                <div className="text-center mt-4 pt-2 border-top">
+                <div className="text-center mt-4 pt-3 border-top">
                   <p className="text-secondary small mb-0">
                     Already have an account?{" "}
                     <Link

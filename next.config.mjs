@@ -4,10 +4,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  webpack: (config, { dev }) => {
-    if (dev) {
-      config.cache = false;
-    }
+  webpack: (config) => {
     return config;
   },
   async redirects() {

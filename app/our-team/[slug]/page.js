@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/components/common/PageHeader";
 import { doctorsData } from "@/data/doctorsData";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 export default function DoctorDetailPage({ params }) {
   const doctorSlug = params?.slug || "dr-sekhar";
@@ -293,27 +294,29 @@ export default function DoctorDetailPage({ params }) {
                   </h3>
 
                   <p className="text-muted mb-4 mx-auto" style={{ maxWidth: "560px" }}>
-                    Please sign in or create a free patient account with your email and WhatsApp phone number to unlock {doctor.name}&apos;s complete medical qualifications, surgery expertise, consultation schedule, and direct booking.
+                    Sign in with Google to instantly unlock {doctor.name}&apos;s complete medical qualifications, surgery expertise, consultation schedule, and direct booking.
                   </p>
 
-                  <div className="row g-3 justify-content-center mb-4">
-                    <div className="col-md-6 col-12">
-                      <Link
-                        href={`/login?redirect=/our-team/${doctorSlug}`}
-                        className="btn btn-default w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2"
-                      >
-                        <i className="fa-solid fa-right-to-bracket"></i> Sign In to Your Account
-                      </Link>
+                  <div className="d-flex flex-column align-items-center gap-3 mx-auto mb-4" style={{ maxWidth: "380px" }}>
+                    <GoogleSignInButton
+                      redirectPath={`/our-team/${doctorSlug}`}
+                      buttonText="Sign In with Google"
+                      size="md"
+                    />
+
+                    <div className="d-flex align-items-center w-100 my-1">
+                      <hr className="flex-grow-1 my-0" />
+                      <span className="px-2 text-muted small" style={{ fontSize: "11px" }}>OR</span>
+                      <hr className="flex-grow-1 my-0" />
                     </div>
-                    <div className="col-md-6 col-12">
-                      <Link
-                        href={`/signup?redirect=/our-team/${doctorSlug}`}
-                        className="btn btn-outline-dark w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2"
-                        style={{ borderColor: "#07332F", color: "#07332F" }}
-                      >
-                        <i className="fa-solid fa-user-plus"></i> Create Patient Account
-                      </Link>
-                    </div>
+
+                    <Link
+                      href={`/login?redirect=/our-team/${doctorSlug}`}
+                      className="btn btn-sm btn-outline-dark py-2 px-3 fw-semibold w-100 rounded-pill"
+                      style={{ fontSize: "13px" }}
+                    >
+                      <i className="fa-solid fa-envelope me-1"></i> Sign In with Email
+                    </Link>
                   </div>
 
                   <div

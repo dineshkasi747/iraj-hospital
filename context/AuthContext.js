@@ -10,6 +10,7 @@ const AuthContext = createContext({
   loading: true,
   signUp: async () => {},
   signIn: async () => {},
+  signInWithGoogle: async () => {},
   signOut: async () => {},
   updateProfile: async () => {},
 });
@@ -20,8 +21,19 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load profile helper
-  const loadProfile = async (userId, userMetadata = {}) => {
+  // Load and synchronize profile
+  const loadProfile = async (userId, userMetadata = {}, userEmail = "") => {
+    // Extract full name from Google metadata or custom metadata
+    const resolvedName =
+      userMetadata.full_name ||
+      userMetadata.name ||
+      (userMetadata.given_name
+        ? `${userMetadata.given_name} ${userMetadata.family_name || ""}`.trim()
+        : "") ||
+      (userEmail ? userEmail.split("@")[0] : "Patient");
+
+    const avatarUrl = userMetadata.avatar_url || userMetadata.picture || "";
+
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -30,36 +42,40 @@ export function AuthProvider({ children }) {
         .single();
 
       if (data && !error) {
-        setProfile(data);
-        localStorage.setItem("iraj_user_profile", JSON.stringify(data));
-        return data;
+        // Update name or avatar if not set yet
+        const updated = {
+          ...data,
+          full_name: data.full_name || resolvedName,
+          email: data.email || userEmail,
+          avatar_url: data.avatar_url || avatarUrl,
+        };
+        setProfile(updated);
+        localStorage.setItem("iraj_user_profile", JSON.stringify(updated));
+        return updated;
       }
     } catch (err) {
       console.warn("Could not fetch profile from Supabase table:", err.message);
     }
 
-    // Fallback to metadata or cached profile
-    const cached = localStorage.getItem("iraj_user_profile");
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (parsed.id === userId || parsed.email === userMetadata.email) {
-          setProfile(parsed);
-          return parsed;
-        }
-      } catch (e) {}
-    }
-
-    const fallbackProfile = {
+    // Fallback profile object
+    const newProfile = {
       id: userId,
-      full_name: userMetadata.full_name || "Patient",
-      email: userMetadata.email || "",
+      full_name: resolvedName,
+      email: userEmail || userMetadata.email || "",
       phone: userMetadata.phone || "",
+      avatar_url: avatarUrl,
       whatsapp_opt_in: userMetadata.whatsapp_opt_in ?? true,
     };
-    setProfile(fallbackProfile);
-    localStorage.setItem("iraj_user_profile", JSON.stringify(fallbackProfile));
-    return fallbackProfile;
+
+    try {
+      await supabase.from("profiles").upsert(newProfile);
+    } catch (e) {
+      console.warn("Profile table upsert skipped:", e.message);
+    }
+
+    setProfile(newProfile);
+    localStorage.setItem("iraj_user_profile", JSON.stringify(newProfile));
+    return newProfile;
   };
 
   useEffect(() => {
@@ -67,12 +83,18 @@ export function AuthProvider({ children }) {
 
     async function initAuth() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
           if (session?.user) {
-            await loadProfile(session.user.id, session.user.user_metadata);
+            await loadProfile(
+              session.user.id,
+              session.user.user_metadata,
+              session.user.email
+            );
           } else {
             // Check for guest or local test session
             const localSaved = localStorage.getItem("iraj_user_profile");
@@ -80,7 +102,11 @@ export function AuthProvider({ children }) {
               try {
                 const parsed = JSON.parse(localSaved);
                 if (parsed.email && parsed.isLocalAuth) {
-                  setUser({ id: parsed.id, email: parsed.email, user_metadata: parsed });
+                  setUser({
+                    id: parsed.id,
+                    email: parsed.email,
+                    user_metadata: parsed,
+                  });
                   setProfile(parsed);
                 }
               } catch (e) {}
@@ -102,7 +128,11 @@ export function AuthProvider({ children }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        await loadProfile(session.user.id, session.user.user_metadata);
+        await loadProfile(
+          session.user.id,
+          session.user.user_metadata,
+          session.user.email
+        );
       } else {
         setProfile(null);
         localStorage.removeItem("iraj_user_profile");
@@ -116,8 +146,79 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  // Sign In with Google OAuth
+  const signInWithGoogle = async (redirectPath = "/", customGoogleData = null) => {
+    setLoading(true);
+    try {
+      if (customGoogleData && customGoogleData.email) {
+        const fakeGoogleUser = {
+          id: "google_patient_" + Date.now(),
+          email: customGoogleData.email,
+          user_metadata: {
+            full_name: customGoogleData.name || customGoogleData.email.split("@")[0],
+            name: customGoogleData.name || customGoogleData.email.split("@")[0],
+            email: customGoogleData.email,
+            avatar_url: customGoogleData.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+            phone: customGoogleData.phone || "",
+            isLocalAuth: true,
+            provider: "google",
+          },
+          isLocalAuth: true,
+        };
+        const userProf = {
+          id: fakeGoogleUser.id,
+          full_name: fakeGoogleUser.user_metadata.full_name,
+          email: fakeGoogleUser.email,
+          phone: customGoogleData.phone || "",
+          avatar_url: fakeGoogleUser.user_metadata.avatar_url,
+          isLocalAuth: true,
+          provider: "google",
+        };
+        setUser(fakeGoogleUser);
+        setProfile(userProf);
+        localStorage.setItem("iraj_user_profile", JSON.stringify(userProf));
+        return { data: { user: fakeGoogleUser, session: null }, error: null };
+      }
+
+      const siteUrl =
+        typeof window !== "undefined" ? window.location.origin : "";
+      const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(
+        redirectPath
+      )}`;
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo,
+          queryParams: {
+            access_type: "offline",
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (error) {
+        console.warn("Supabase OAuth Google error:", error.message);
+        return { data: null, error };
+      }
+
+      return { data, error: null };
+    } catch (err) {
+      console.warn("Google sign in exception:", err.message);
+      return { data: null, error: err };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Sign Up with Email, Password, Full Name, Phone (WhatsApp)
-  const signUp = async ({ email, password, fullName, phone, whatsappOptIn = true }) => {
+  const signUp = async ({
+    email,
+    password,
+    fullName,
+    phone,
+    whatsappOptIn = true,
+  }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -133,12 +234,18 @@ export function AuthProvider({ children }) {
       });
 
       if (error) {
-        // Fallback for demo/development if Supabase key is pending activation
-        if (error.message.includes("API key") || error.message.includes("invalid")) {
+        if (
+          error.message.includes("API key") ||
+          error.message.includes("invalid")
+        ) {
           const fakeUser = {
             id: "local_" + Date.now(),
             email,
-            user_metadata: { full_name: fullName, phone, whatsapp_opt_in: whatsappOptIn },
+            user_metadata: {
+              full_name: fullName,
+              phone,
+              whatsapp_opt_in: whatsappOptIn,
+            },
             isLocalAuth: true,
           };
           const userProf = {
@@ -192,12 +299,15 @@ export function AuthProvider({ children }) {
       });
 
       if (error) {
-        // Check if there is a local account saved during dev testing
         const cached = localStorage.getItem("iraj_user_profile");
         if (cached) {
           const parsed = JSON.parse(cached);
           if (parsed.email?.toLowerCase() === email.toLowerCase()) {
-            const fakeUser = { id: parsed.id, email: parsed.email, user_metadata: parsed };
+            const fakeUser = {
+              id: parsed.id,
+              email: parsed.email,
+              user_metadata: parsed,
+            };
             setUser(fakeUser);
             setProfile(parsed);
             return { data: { user: fakeUser, session: null }, error: null };
@@ -207,7 +317,11 @@ export function AuthProvider({ children }) {
       }
 
       if (data?.user) {
-        await loadProfile(data.user.id, data.user.user_metadata);
+        await loadProfile(
+          data.user.id,
+          data.user.user_metadata,
+          data.user.email
+        );
       }
 
       return { data, error: null };
@@ -261,6 +375,7 @@ export function AuthProvider({ children }) {
         loading,
         signUp,
         signIn,
+        signInWithGoogle,
         signOut,
         updateProfile,
       }}

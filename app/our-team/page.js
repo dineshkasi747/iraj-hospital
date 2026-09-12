@@ -5,6 +5,7 @@ import Link from "next/link";
 import PageHeader from "@/components/common/PageHeader";
 import { useAuth } from "@/context/AuthContext";
 import { doctorsData } from "@/data/doctorsData";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 export default function OurTeamPage() {
   const { user, profile, loading } = useAuth();
@@ -67,34 +68,33 @@ export default function OurTeamPage() {
               </p>
 
               {/* Action Buttons at Page Start */}
-              <div className="d-flex flex-wrap justify-content-center gap-3">
-                <Link
-                  href="/login?redirect=/our-team"
-                  className="btn-default py-3 px-4 fw-bold d-inline-flex align-items-center gap-2"
-                  style={{ textDecoration: "none" }}
-                >
-                  <i className="fa-solid fa-right-to-bracket"></i>
-                  <span>Sign In to See Doctors</span>
-                </Link>
+              <div className="d-flex flex-column align-items-center gap-3 mx-auto" style={{ maxWidth: "380px" }}>
+                <GoogleSignInButton
+                  redirectPath="/our-team"
+                  buttonText="Sign In with Google to Unlock"
+                  size="md"
+                />
 
-                <Link
-                  href="/signup?redirect=/our-team"
-                  className="btn py-3 px-4 fw-bold d-inline-flex align-items-center gap-2 rounded-pill"
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "2px solid #07332F",
-                    color: "#07332F",
-                    textDecoration: "none",
-                  }}
-                >
-                  <i className="fa-solid fa-user-plus"></i>
-                  <span>Create Patient Account</span>
-                </Link>
+                <div className="d-flex align-items-center w-100 my-1">
+                  <hr className="flex-grow-1 my-0" />
+                  <span className="px-2 text-muted small" style={{ fontSize: "11px" }}>OR</span>
+                  <hr className="flex-grow-1 my-0" />
+                </div>
+
+                <div className="d-flex flex-wrap justify-content-center gap-2 w-100">
+                  <Link
+                    href="/login?redirect=/our-team"
+                    className="btn btn-sm btn-outline-dark py-2 px-3 fw-semibold flex-grow-1 rounded-pill"
+                    style={{ fontSize: "13px" }}
+                  >
+                    <i className="fa-solid fa-envelope me-1"></i> Sign In with Email
+                  </Link>
+                </div>
               </div>
 
               <div className="mt-4 pt-3 border-top d-inline-flex align-items-center gap-2 text-secondary small">
                 <i className="fa-solid fa-shield-halved text-success"></i>
-                <span>Fast &amp; secure access with email &amp; WhatsApp verification</span>
+                <span>Fast &amp; secure 1-click access with Google &amp; verified WhatsApp</span>
               </div>
             </div>
           ) : (
@@ -370,19 +370,18 @@ export default function OurTeamPage() {
               Please login first to see about {selectedDoctorName || "our team"} and view complete medical qualifications, surgery expertise, and consultation booking.
             </p>
 
-            <div className="d-grid gap-2">
+            <div className="d-flex flex-column gap-3 mb-2">
+              <GoogleSignInButton
+                redirectPath="/our-team"
+                buttonText="Continue with Google"
+                size="md"
+              />
               <Link
                 href="/login?redirect=/our-team"
-                className="btn btn-default py-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+                className="btn btn-outline-dark py-2 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-pill"
+                style={{ fontSize: "14px" }}
               >
-                <i className="fa-solid fa-right-to-bracket"></i> Sign In to Your Account
-              </Link>
-              <Link
-                href="/signup?redirect=/our-team"
-                className="btn btn-outline-dark py-3 fw-bold d-flex align-items-center justify-content-center gap-2 rounded-pill"
-                style={{ borderColor: "#07332F", color: "#07332F" }}
-              >
-                <i className="fa-solid fa-user-plus"></i> Create Patient Account
+                <i className="fa-solid fa-envelope me-1"></i> Sign In with Email
               </Link>
             </div>
           </div>
