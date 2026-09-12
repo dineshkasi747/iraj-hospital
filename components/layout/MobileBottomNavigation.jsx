@@ -7,6 +7,15 @@ import { usePathname } from "next/navigation";
 export default function MobileBottomNavigation() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+  // Do not show bottom navigation during initial page loading / preloader state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 750);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Close peacock menu on route change
   useEffect(() => {
@@ -35,6 +44,9 @@ export default function MobileBottomNavigation() {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  // If page is still in loading / preloader state, do not render bottom dock
+  if (!isReady) return null;
 
   // Primary bottom dock tabs
   const bottomTabs = [

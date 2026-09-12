@@ -27,6 +27,7 @@ export default function Preloader() {
         opacity: fadeOut ? 0 : 1,
         transition: "opacity 0.5s ease-out, visibility 0.5s ease-out",
         pointerEvents: fadeOut ? "none" : "auto",
+        zIndex: 2147483647,
       }}
     >
       <div className="iraj-loader-lockup">
