@@ -33,9 +33,9 @@ export default function Header() {
 
       <div className={`header-sticky ${isScrolled ? "active" : ""}`}>
         <nav className="navbar navbar-expand-lg">
-          <div className="container-fluid px-xl-5 px-lg-4 px-3">
+          <div className="container-fluid px-xl-5 px-lg-4 px-3 d-flex align-items-center justify-content-between flex-nowrap">
             {/* Logo Start */}
-            <div className="header-logo">
+            <div className="header-logo flex-shrink-0">
               <Link
                 className="navbar-brand d-inline-flex align-items-center"
                 href="/"
@@ -44,23 +44,9 @@ export default function Header() {
                 <img
                   src="/images/iraj-logo.png"
                   alt="IRAJ Hospital"
-                  style={{
-                    height: "44px",
-                    width: "auto",
-                    marginRight: "10px",
-                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
-                  }}
+                  className="header-brand-logo-img"
                 />
-                <span
-                  style={{
-                    color: "#ffffff",
-                    fontWeight: "800",
-                    fontSize: "20px",
-                    letterSpacing: "0.5px",
-                    textTransform: "uppercase",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <span className="header-brand-title">
                   IRAJ{" "}
                   <span style={{ color: "var(--accent-color, #F7A582)" }}>
                     Hospital
@@ -304,7 +290,7 @@ export default function Header() {
             {/* Main Menu End */}
 
             {/* Mobile Header Quick Actions: Sign In / Account + Book Appointment */}
-            <div className="d-flex align-items-center gap-2 d-lg-none">
+            <div className="mobile-header-actions d-flex align-items-center gap-1 gap-sm-2 d-lg-none flex-shrink-0">
               {user ? (
                 <Link
                   href="/appointment"
@@ -318,6 +304,7 @@ export default function Header() {
                     fontSize: "12px",
                     fontWeight: "700",
                     textDecoration: "none",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   <i className="fa-solid fa-circle-user me-1 text-accent" style={{ color: "#F7A582" }}></i>
@@ -336,6 +323,7 @@ export default function Header() {
                     fontSize: "12px",
                     fontWeight: "600",
                     textDecoration: "none",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   <i className="fa-solid fa-right-to-bracket me-1 text-accent" style={{ color: "#F7A582" }}></i>
