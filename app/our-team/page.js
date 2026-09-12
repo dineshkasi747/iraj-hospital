@@ -1,0 +1,393 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import PageHeader from "@/components/common/PageHeader";
+import { useAuth } from "@/context/AuthContext";
+import { doctorsData } from "@/data/doctorsData";
+
+export default function OurTeamPage() {
+  const { user, profile, loading } = useAuth();
+  const [showLoginPromptModal, setShowLoginPromptModal] = useState(false);
+  const [selectedDoctorName, setSelectedDoctorName] = useState("");
+
+  const handleLockedClick = (doctorName) => {
+    setSelectedDoctorName(doctorName);
+    setShowLoginPromptModal(true);
+  };
+
+  return (
+    <>
+      <PageHeader
+        title="Our Doctors & Team"
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Our Doctors" },
+        ]}
+      />
+
+      {/* Main Doctors Section */}
+      <div className="meet-our-team our-team py-5">
+        <div className="container">
+          {/* Top of Page Status Gate */}
+          {loading ? (
+            <div className="text-center py-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : !user ? (
+            /* Locked Gate Banner - Right at Page Starting */
+            <div
+              className="locked-page-start-gate p-4 p-md-5 rounded-4 text-center mb-5 shadow-sm"
+              style={{
+                backgroundColor: "#F4FAF8",
+                border: "2px dashed #38D39F",
+              }}
+            >
+              <div
+                className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                style={{
+                  width: "68px",
+                  height: "68px",
+                  backgroundColor: "rgba(7, 51, 47, 0.1)",
+                  color: "#07332F",
+                  fontSize: "28px",
+                }}
+              >
+                <i className="fa-solid fa-lock"></i>
+              </div>
+
+              <h2 className="fw-bold mb-2" style={{ color: "#07332F", fontSize: "26px" }}>
+                Please Log In First to View Our Doctors &amp; Clinical Team
+              </h2>
+
+              <p className="text-muted mx-auto mb-4" style={{ maxWidth: "620px", fontSize: "15px", lineHeight: "1.7" }}>
+                For patient privacy and clinical verification, access to our full specialist directory, doctors&apos; credentials, surgical experience, and consultation booking is reserved for logged in users.
+              </p>
+
+              {/* Action Buttons at Page Start */}
+              <div className="d-flex flex-wrap justify-content-center gap-3">
+                <Link
+                  href="/login?redirect=/our-team"
+                  className="btn-default py-3 px-4 fw-bold d-inline-flex align-items-center gap-2"
+                  style={{ textDecoration: "none" }}
+                >
+                  <i className="fa-solid fa-right-to-bracket"></i>
+                  <span>Sign In to See Doctors</span>
+                </Link>
+
+                <Link
+                  href="/signup?redirect=/our-team"
+                  className="btn py-3 px-4 fw-bold d-inline-flex align-items-center gap-2 rounded-pill"
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "2px solid #07332F",
+                    color: "#07332F",
+                    textDecoration: "none",
+                  }}
+                >
+                  <i className="fa-solid fa-user-plus"></i>
+                  <span>Create Patient Account</span>
+                </Link>
+              </div>
+
+              <div className="mt-4 pt-3 border-top d-inline-flex align-items-center gap-2 text-secondary small">
+                <i className="fa-solid fa-shield-halved text-success"></i>
+                <span>Fast &amp; secure access with email &amp; WhatsApp verification</span>
+              </div>
+            </div>
+          ) : (
+            /* Logged In Unlocked Welcome Banner */
+            <div
+              className="unlocked-welcome-banner p-3 p-md-4 rounded-4 mb-5 d-flex flex-wrap align-items-center justify-content-between gap-3 shadow-sm"
+              style={{
+                backgroundColor: "#EAF6F0",
+                border: "1px solid #BDE2D0",
+              }}
+            >
+              <div className="d-flex align-items-center gap-3">
+                <div
+                  className="d-flex align-items-center justify-content-center rounded-circle"
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    backgroundColor: "#38D39F",
+                    color: "#07332F",
+                    fontSize: "20px",
+                  }}
+                >
+                  <i className="fa-solid fa-lock-open"></i>
+                </div>
+                <div>
+                  <h5 className="mb-0 fw-bold" style={{ color: "#07332F" }}>
+                    Welcome, {profile?.full_name || user.email}
+                  </h5>
+                  <p className="text-success small mb-0 fw-semibold">
+                    <i className="fa-solid fa-circle-check me-1"></i> Full Clinical Team Directory Unlocked
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href="/appointment"
+                className="btn btn-sm btn-success fw-bold px-4 py-2 rounded-pill d-inline-flex align-items-center gap-2"
+              >
+                <i className="fa-solid fa-calendar-check"></i> Book Consultation
+              </Link>
+            </div>
+          )}
+
+          {/* Section Header */}
+          <div className="row section-row text-center mb-5">
+            <div className="col-lg-8 mx-auto">
+              <div className="section-title">
+                <h3 className="wow fadeInUp" style={{ color: "var(--accent-color, #F7A582)", textTransform: "uppercase" }}>
+                  EXPERIENCED &amp; EMPATHETIC
+                </h3>
+                <h2 className="text-anime-style-3">Meet Our Medical Specialists</h2>
+                <p className="text-muted mt-2 wow fadeInUp">
+                  Our doctors bring decades of clinical excellence, specialized surgical skill, and compassionate bedside care to patients across Visakhapatnam.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Doctors Grid */}
+          <div className="row g-4">
+            {doctorsData.map((doctor, idx) => (
+              <div key={doctor.id} className="col-lg-4 col-md-6">
+                <div
+                  className="team-member-item h-100 rounded-4 overflow-hidden position-relative shadow-sm"
+                  style={{
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E2ECE9",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  }}
+                >
+                  {/* Doctor Image & Lock Overlay if !user */}
+                  <div className="team-image position-relative overflow-hidden" style={{ minHeight: "260px" }}>
+                    <figure className="image-anime mb-0">
+                      <img
+                        src={doctor.image}
+                        alt={doctor.name}
+                        style={{
+                          width: "100%",
+                          height: "280px",
+                          objectFit: "cover",
+                          filter: !user ? "blur(2px) grayscale(30%)" : "none",
+                          transition: "filter 0.3s ease",
+                        }}
+                      />
+                    </figure>
+
+                    {/* Locked Badge Overlay for Unauthenticated Users */}
+                    {!user && (
+                      <div
+                        className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center"
+                        style={{
+                          backgroundColor: "rgba(7, 51, 47, 0.45)",
+                          backdropFilter: "blur(1px)",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleLockedClick(doctor.name)}
+                      >
+                        <div
+                          className="d-flex align-items-center justify-content-center rounded-circle mb-2"
+                          style={{
+                            width: "48px",
+                            height: "48px",
+                            backgroundColor: "#F7A582",
+                            color: "#07332F",
+                            fontSize: "20px",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                          }}
+                        >
+                          <i className="fa-solid fa-lock"></i>
+                        </div>
+                        <span className="badge bg-dark text-white px-3 py-2 rounded-pill fw-semibold shadow-sm mb-1">
+                          Locked Profile
+                        </span>
+                        <small className="text-white fw-bold" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                          Click to Log In &amp; View
+                        </small>
+                      </div>
+                    )}
+
+                    {/* Team Social List if user is logged in */}
+                    {user && (
+                      <div className="team-social-list">
+                        <ul>
+                          <li>
+                            <a href="https://www.instagram.com/irajhospitals/" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
+                              <i className="fa-brands fa-instagram"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://wa.me/919801081080" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="WhatsApp">
+                              <i className="fa-brands fa-whatsapp"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://www.facebook.com/profile.php?id=61581884108145" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Facebook">
+                              <i className="fa-brands fa-facebook-f"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Doctor Body */}
+                  <div className="team-body p-4">
+                    <div className="team-content">
+                      <div className="d-flex align-items-center justify-content-between mb-1">
+                        <span
+                          className="badge px-2 py-1 rounded-pill small"
+                          style={{
+                            backgroundColor: "rgba(56, 211, 159, 0.15)",
+                            color: "#07332F",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {doctor.role}
+                        </span>
+                        {!user ? (
+                          <span className="badge bg-warning text-dark small">
+                            <i className="fa-solid fa-lock me-1"></i> Locked
+                          </span>
+                        ) : (
+                          <span className="badge bg-success small">
+                            <i className="fa-solid fa-check me-1"></i> Verified
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="fw-bold mt-2 mb-2" style={{ fontSize: "20px" }}>
+                        {user ? (
+                          <Link href={`/our-team/${doctor.slug}`} className="text-dark text-decoration-none">
+                            {doctor.name}
+                          </Link>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleLockedClick(doctor.name)}
+                            className="text-dark border-0 bg-transparent p-0 fw-bold text-start"
+                            style={{ cursor: "pointer", fontSize: "20px" }}
+                          >
+                            {doctor.name} <i className="fa-solid fa-lock ms-1 text-muted" style={{ fontSize: "14px" }}></i>
+                          </button>
+                        )}
+                      </h3>
+
+                      <p className="text-muted small mb-3">
+                        {user ? doctor.bio : "Detailed medical background, consultation schedule, and credentials locked. Please log in to view."}
+                      </p>
+
+                      {user ? (
+                        <div className="d-flex align-items-center justify-content-between pt-2 border-top">
+                          <Link
+                            href={`/our-team/${doctor.slug}`}
+                            className="text-primary fw-semibold small text-decoration-none d-inline-flex align-items-center gap-1"
+                          >
+                            <span>Full Profile</span>
+                            <i className="fa-solid fa-arrow-right"></i>
+                          </Link>
+                          <Link
+                            href="/appointment"
+                            className="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold"
+                          >
+                            <i className="fa-solid fa-calendar-check me-1"></i> Book
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className="pt-2 border-top">
+                          <button
+                            type="button"
+                            onClick={() => handleLockedClick(doctor.name)}
+                            className="btn btn-sm w-100 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2"
+                            style={{
+                              backgroundColor: "#F7A582",
+                              color: "#07332F",
+                              border: "none",
+                              padding: "8px 16px",
+                            }}
+                          >
+                            <i className="fa-solid fa-lock"></i> Please Login to See About {doctor.name.split(" ")[0] || "Doctor"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Login Prompt Modal when user clicks locked doctor */}
+      {showLoginPromptModal && (
+        <div
+          className="modal-backdrop-custom position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            zIndex: 9999,
+            padding: "20px",
+          }}
+          onClick={() => setShowLoginPromptModal(false)}
+        >
+          <div
+            className="modal-card bg-white p-4 p-md-5 rounded-4 shadow-lg text-center position-relative"
+            style={{ maxWidth: "480px", width: "100%" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="btn-close position-absolute top-0 end-0 m-3"
+              onClick={() => setShowLoginPromptModal(false)}
+              aria-label="Close"
+            ></button>
+
+            <div
+              className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+              style={{
+                width: "64px",
+                height: "64px",
+                backgroundColor: "rgba(247, 165, 130, 0.2)",
+                color: "#07332F",
+                fontSize: "26px",
+              }}
+            >
+              <i className="fa-solid fa-lock"></i>
+            </div>
+
+            <h3 className="fw-bold mb-2" style={{ color: "#07332F", fontSize: "22px" }}>
+              Please Login First
+            </h3>
+
+            <p className="text-muted mb-4" style={{ fontSize: "14px", lineHeight: "1.6" }}>
+              Please login first to see about {selectedDoctorName || "our team"} and view complete medical qualifications, surgery expertise, and consultation booking.
+            </p>
+
+            <div className="d-grid gap-2">
+              <Link
+                href="/login?redirect=/our-team"
+                className="btn btn-default py-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+              >
+                <i className="fa-solid fa-right-to-bracket"></i> Sign In to Your Account
+              </Link>
+              <Link
+                href="/signup?redirect=/our-team"
+                className="btn btn-outline-dark py-3 fw-bold d-flex align-items-center justify-content-center gap-2 rounded-pill"
+                style={{ borderColor: "#07332F", color: "#07332F" }}
+              >
+                <i className="fa-solid fa-user-plus"></i> Create Patient Account
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
