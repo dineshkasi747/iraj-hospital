@@ -70,21 +70,21 @@ export default function MobileBottomNavigation() {
   ];
 
   // 5 Peacock Radial Arc Menu items evenly distributed across the semi-circle fan
-  // Total span from 160 deg (left) to 20 deg (right)
+  // Span from 152 deg (left) to 28 deg (right) for 100% full visibility on all phone screens
   const peacockItems = [
     {
       id: "our-team",
       label: "Our Team",
       href: "/our-team",
       icon: "fa-solid fa-user-doctor",
-      angle: 160,
+      angle: 152,
     },
     {
       id: "testimonials",
       label: "Testimonials",
       href: "/#testimonials",
       icon: "fa-solid fa-star",
-      angle: 125,
+      angle: 121,
     },
     {
       id: "blog",
@@ -98,19 +98,19 @@ export default function MobileBottomNavigation() {
       label: "FAQ's",
       href: "/faq",
       icon: "fa-solid fa-circle-question",
-      angle: 55,
+      angle: 59,
     },
     {
       id: "gallery",
       label: "Gallery",
       href: "/about#facilities",
       icon: "fa-solid fa-images",
-      angle: 20,
+      angle: 28,
     },
   ];
 
-  // Radial radius in pixels
-  const radius = 175;
+  // Radial radius in pixels - perfectly calibrated for mobile screen widths
+  const radius = 142;
 
   return (
     <>
@@ -131,7 +131,7 @@ export default function MobileBottomNavigation() {
           onClick={(e) => e.stopPropagation()}
         >
           {/* SVG Connector Spoke Lines */}
-          <svg className="peacock-spokes-svg" viewBox="-220 -220 440 220">
+          <svg className="peacock-spokes-svg" viewBox="-180 -180 360 180">
             <defs>
               <linearGradient
                 id="spokeGradient"
