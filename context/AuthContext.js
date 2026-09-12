@@ -147,7 +147,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Sign In with Google OAuth
-  const signInWithGoogle = async (redirectPath = "/", customGoogleData = null) => {
+  const signInWithGoogle = async (redirectPath = "/appointment", customGoogleData = null) => {
     setLoading(true);
     try {
       if (customGoogleData && customGoogleData.email) {
@@ -181,9 +181,12 @@ export function AuthProvider({ children }) {
       }
 
       const siteUrl =
-        typeof window !== "undefined" ? window.location.origin : "";
+        typeof window !== "undefined"
+          ? window.location.origin
+          : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+      const targetPath = redirectPath || "/appointment";
       const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(
-        redirectPath
+        targetPath
       )}`;
 
       const { data, error } = await supabase.auth.signInWithOAuth({

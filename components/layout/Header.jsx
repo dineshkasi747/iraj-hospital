@@ -266,7 +266,7 @@ export default function Header() {
                         className={`nav-link ${
                           pathname === "/login" ? "active" : ""
                         }`}
-                        href="/login"
+                        href={`/login?redirect=${encodeURIComponent(pathname && pathname !== "/login" ? pathname : "/appointment")}`}
                         onClick={() => setMobileNavOpen(false)}
                       >
                         <i className="fa-solid fa-user me-1"></i> Sign In
@@ -312,7 +312,7 @@ export default function Header() {
                 </Link>
               ) : (
                 <Link
-                  href="/login"
+                  href={`/login?redirect=${encodeURIComponent(pathname && pathname !== "/login" ? pathname : "/appointment")}`}
                   className="btn btn-sm d-inline-flex align-items-center justify-content-center text-white"
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.15)",

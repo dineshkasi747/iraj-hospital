@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabaseClient";
 function CallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/";
+  const rawNext = searchParams.get("next");
+  const next = rawNext && rawNext !== "/" ? rawNext : "/appointment";
   const [status, setStatus] = useState("Verifying Google credentials...");
 
   useEffect(() => {
@@ -28,12 +29,12 @@ function CallbackHandler() {
 
         setStatus("Signed in successfully! Redirecting...");
         timeoutId = setTimeout(() => {
-          router.replace(next.startsWith("/") ? next : "/");
+          router.replace(next.startsWith("/") ? next : "/appointment");
         }, 400);
       } catch (err) {
         console.warn("OAuth callback handling note:", err.message);
         timeoutId = setTimeout(() => {
-          router.replace(next.startsWith("/") ? next : "/");
+          router.replace(next.startsWith("/") ? next : "/appointment");
         }, 600);
       }
     }
